@@ -1,24 +1,22 @@
 FROM python:3.11-slim
 
-# Installer Chrome et ses dépendances
+# Dépendances
 RUN apt-get update && \
-    apt-get install -y wget unzip curl gnupg && \
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt install -y ./google-chrome-stable_current_amd64.deb && \
-    rm google-chrome-stable_current_amd64.deb
+    apt-get install -y wget unzip curl gnupg libnss3 libatk1.0-0 libatk-bridge2.0-0 libx11-xcb1 libgtk-3-0 libxss1 libasound2
 
-# Vérifie que Chrome est bien installé
-RUN google-chrome --version
+# Télécharger Chrome CfT version 138
+RUN wget -O /tmp/chrome-linux64.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/138.0.7204.100/linux64/chrome-linux64.zip && \
+    unzip /tmp/chrome-linux64.zip -d /opt/ && \
+    rm /tmp/chrome-linux64.zip && \
+    ln -s /opt/chrome-linux64/chrome /usr/bin/google-chrome
 
-# Installer Chromedriver correspondant
-RUN LATEST=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    echo "Téléchargement de Chromedriver version : $LATEST" && \
-    wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${LATEST}/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip
+# Télécharger Chromedriver version 138
+RUN wget -O /tmp/chromedriver-linux64.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/138.0.7204.100/linux64/chromedriver-linux64.zip && \
+    unzip /tmp/chromedriver-linux64.zip -d /usr/local/bin/ && \
+    rm /tmp/chromedriver-linux64.zip
 
-# Vérifie que Chromedriver est bien installé
-RUN chromedriver --version
+# Vérification
+RUN google-chrome --version && chromedriver --version
 
 WORKDIR /app
 
