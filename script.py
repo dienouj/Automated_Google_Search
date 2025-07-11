@@ -20,9 +20,12 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Indique à Selenium où trouver chromedriver.exe
-service = Service(executable_path="C:/Jouneid/0.Python/chromedriver-win64/chromedriver.exe")
-browser = webdriver.Chrome(service=service, options=chrome_options)
+# EN LOCAL: Indique à Selenium où trouver chromedriver.exe
+#service = Service(executable_path="C:/Jouneid/0.Python/chromedriver-win64/chromedriver.exe")
+#browser = webdriver.Chrome(service=service, options=chrome_options)
+
+# Dans Docker, pas de chemin Windows — laisse Selenium trouver le chromedriver installé
+browser = webdriver.Chrome(options=chrome_options)
 
 # Ouvre l'URL Google Search avec le mot-clé donné
 url = f"https://www.google.com/search?q={search_string}"
